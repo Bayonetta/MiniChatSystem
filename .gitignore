@@ -1,21 +1,21 @@
 
-.idea/
-*~
-*.gem
-*.rbc
-.bundle
-.config
-coverage
-InstalledFiles
-lib/bundler/man
-pkg
-rdoc
-spec/reports
-test/tmp
-test/version_tmp
-tmp
+# Python / 本项目相关
+__pycache__/
+*.py[cod]
+*.pyo
+*.pyd
+*.swp
+.DS_Store
+.venv/
+venv/
 
-# YARD artifacts
-.yardoc
-_yardoc
-doc/
+# 聊天记录和历史产物
+history.log
+
+# 本地证书/密钥（如果有）
+cert.pem
+key.pem
+
+# IDE 配置
+.idea/
+.vscode/

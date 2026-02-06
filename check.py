@@ -1,24 +1,43 @@
-from binascii import b2a_hex, a2b_hex
-from Crypto.Cipher import DES
-import sys
+import json
+from pathlib import Path
 
-#key = '12345678'
 
-while 1:
-    key = input('Please input the key(8 bytes): ')
-    if key == '12345678':
-        file = open('history', 'r')
-        try:
-            text = file.read()
-        finally:
-            file.close()
+HISTORY_FILE = Path("history.log")
 
-        obj = DES.new(key)
-        get_cryp = a2b_hex(text)
-        after_text = obj.decrypt(get_cryp)
-        print('\nChat History: \n', after_text)
-        break;
-    else:
-        result = input("Wrong!Input anything try again!(If you won't try another time, just input 'no') Your Answer is: ")
-        if result == 'no':
-            break;
+
+def main() -> None:
+    """
+    简单的历史记录查看脚本。
+
+    - 读取服务器写入的 JSON Lines 文件 history.log
+    - 逐条打印时间、发送者和内容
+    """
+    if not HISTORY_FILE.exists():
+        print("history.log 不存在。先运行 server.py / client.py 产生一些消息吧。")
+        return
+
+    with HISTORY_FILE.open("r", encoding="utf-8") as f:
+        for line in f:
+            line = line.strip()
+            if not line:
+                continue
+            try:
+                msg = json.loads(line)
+            except json.JSONDecodeError:
+                print(line)
+                continue
+
+            mtype = msg.get("type", "message")
+            sender = msg.get("from", "unknown")
+            text = msg.get("text", "")
+            ts = msg.get("timestamp", "")
+
+            if mtype == "system":
+                print(f"[{ts}] [SYSTEM] {text}")
+            else:
+                print(f"[{ts}] <{sender}> {text}")
+
+
+if __name__ == "__main__":
+    main()
+
